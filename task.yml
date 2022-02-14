@@ -1,0 +1,50 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: user-addition
+  namespace: ansible-tekton
+spec:
+  description:
+    This Task is used to create the User via Ansible playbook cloned with git
+  workspaces:
+    - name: ansible-hosts
+      mountPath: /etc/ansible
+    - name: input-parameter
+      mountPath: /etc/ansible/Tekton-git
+    - name: validation-script
+      mountPath: /home
+    - name: git-clone
+  steps:
+    - name: host-validation
+      image: klstg-docker.slb-wartifactory-v.stg.rmn.local/rakuten/sre-ninja/ansible-user:v0.0.0
+      script: |
+         #!/usr/bin/env bash
+         cd /home
+         python validation.py /etc/ansible/Tekton-git/vars.yaml /etc/ansible/hosts
+         if [[ $? -eq 0 ]]; then
+            echo "Host verification is successful validation.Now, Ansible Playbook is ready to Execute"
+         else
+            echo "No Hosts are matched"
+            exit 1
+         fi
+
+    - name: get-clone
+      image: klstg-docker.slb-wartifactory-v.stg.rmn.local/sre-ninja-tekton/tekton-ansible/alpine-git:v0.0.1
+      script: |
+        #!/usr/bin/env sh
+        echo "240b:c0e0:102:54e9:c064:2:0:1  slb-wgithub-v.stg.rmn.local" >> /etc/hosts
+        ping -6 -c 2 slb-wgithub-v.stg.rmn.local
+        git config --global http.sslVerify false
+        cd $(workspaces.git-clone.path)
+        git clone https://6e0a221c840c568b79b5101073ccb9546919421f@slb-wgithub-v.stg.rmn.local/karthikey-dhanapani/Tekton-git.git
+        ls -lrth
+        chmod +x Tekton-git
+
+    - name: ansible-playbook-execute
+      image: klstg-docker.slb-wartifactory-v.stg.rmn.local/rakuten/sre-ninja/ansible-user:v0.0.0
+      script: |
+        #!/usr/bin/env bash
+        pwd
+        cd $(workspaces.git-clone.path)
+        ls -lrth
+        cd Tekton-git
