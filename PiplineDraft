@@ -1,0 +1,20 @@
+This Tekton Pipeline is used to execute to create a user via Ansible.
+We are passing different configmap file as a run time input 
+
+kubectl create configmap input-parameter  --from-file=<PathName> -n <namespace>
+
+1. Hosts       --> Holding Cluster details with username and password 
+2. Vars.       --> Input parameter (Hosts,Group name,Password,Username)
+3. Validation  --> Validating whether hosts details (Cluster VIP) and Vars (Cluster VIP) are matched or not matched 
+
+Workspace (Kind of storage )
+1. Ansible-hosts → Collecting the hosts cm as a file 
+2. Input-Parameter → Collecting the vars.yaml as input file 
+3. Git-Clone → Cloning the Ansible Playbook from git repo (current we are using a default playbook comes from a default user git account)
+
+Docker Image 
+
+Alpine-git → We build an alpine image with git inside of it 
+Ansible-user → Its a centos os image with Ansible module inside of it 
+
+
