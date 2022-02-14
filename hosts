@@ -1,0 +1,2 @@
+[test]
+<Cluster VIP>  ansible_ssh_pass=<Password> ansible_ssh_user=<UserName>
