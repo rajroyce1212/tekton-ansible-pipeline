@@ -32,9 +32,6 @@ spec:
       image: alpine-git:v0.0.1
       script: |
         #!/usr/bin/env sh
-        echo "240b:c0e0:102:54e9:c064:2:0:1  slb-wgithub-v.stg.rmn.local" >> /etc/hosts
-        ping -6 -c 2 slb-wgithub-v.stg.rmn.local
-        git config --global http.sslVerify false
         cd $(workspaces.git-clone.path)
         git clone https://<access token>@<git https url>
         ls -lrth
