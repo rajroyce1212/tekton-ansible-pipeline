@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: user-addition-pipeline-run
+  namespace: ansible-tekton
+spec:
+  pipelineRef:
+    name: user-addition-pipeline
+  workspaces:
+    - name: ansible-hosts
+      configmap:
+        name: ansible-hosts
+    - name: input-parameter
+      configmap:
+        name: input-parameter
+    - name: validation-script
+      configmap:
+        name: validation-script
+    - name: git-clone
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
