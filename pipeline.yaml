@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: user-addition-pipeline
+  namespace: ansible-tekton
+spec:
+  workspaces:
+    - name: ansible-hosts
+    - name: input-parameter
+    - name: validation-script
+    - name: git-clone
+  tasks:
+    - name: user-addition
+      taskRef:
+         name: user-addition
+      workspaces:
+      - name: ansible-hosts
+        workspace: ansible-hosts
+      - name: input-parameter
+        workspace: input-parameter
+      - name: validation-script
+        workspace: validation-script
+      - name: git-clone
+        workspace: git-clone
