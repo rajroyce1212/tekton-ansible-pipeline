@@ -1,0 +1,16 @@
+#[test]
+#<Cluster VIP>
+
+variable_host:
+  - test
+
+group_details:
+  - group1
+
+user_password:
+  - '$6$AZ$nw17BSOp73WyQ5J76u/4/ZwvEOBnyFY47VswGmy/9MH0WNO5K7L/'
+
+user_details:
+  - <user1>
+  - <user2>
+  - <user3>
