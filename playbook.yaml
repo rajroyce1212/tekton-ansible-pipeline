@@ -1,0 +1,27 @@
+---
+- name: sre-ninja
+  hosts: "{{ variable_host }}"
+  remote_user: root
+  become: true
+  vars_files:
+       - /etc/ansible/Tekton-git/vars.yml
+  tasks:
+    - name: Creating a User Group
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ group_details }}"
+
+    - name: Add an  users
+      user:
+        name: "{{ item[0] }}"
+        password: "{{ item[2] }}"
+        state: present
+        shell: /bin/bash
+        groups: "{{ item[1] }}"
+        createhome: yes
+        home: /home/{{ item[0] }}
+      with_nested:
+        - "{{ user_details }}"
+        - "{{ group_details }}"
+        - "{{ user_password }}"
